@@ -12,7 +12,7 @@ import (
 	"github.com/xgotyou/api_gateway/internal/dtos"
 )
 
-func TestProfileHandler(t *testing.T) {
+func TestGetUserHandler(t *testing.T) {
 	usMock := new(userServiceMock)
 	router := SetupRouter(usMock)
 	req, _ := http.NewRequest("GET", "/v1/users/10", strings.NewReader(""))
@@ -26,7 +26,7 @@ func TestProfileHandler(t *testing.T) {
 	assert.JSONEq(t, `{"id":10,"firstName":"John","lastName":"Smith","birthDate":"1985-10-18T03:00:00+00:00","role":2}`, w.Body.String())
 }
 
-func TestProfileHandlerWithNonIntId(t *testing.T) {
+func TestGetUserHandlerWithNonIntId(t *testing.T) {
 	router := SetupRouter(new(userServiceMock))
 	req, _ := http.NewRequest("GET", "/v1/users/alex", strings.NewReader(""))
 	w := httptest.NewRecorder()
