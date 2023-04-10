@@ -2,6 +2,7 @@ package http
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -31,14 +32,20 @@ func JwtAuthHandler(secret string) gin.HandlerFunc {
 			return []byte(secret), nil
 		})
 
-		if err != nil {
+		if err != nil || !token.Valid {
 			c.String(http.StatusUnauthorized, err.Error())
 			return
 		}
 
-		if !token.Valid {
-			c.String(http.StatusUnauthorized, "Invalid token")
-			return
+		if id, ok := token.Claims.(jwt.MapClaims)["id"].(float64); ok {
+			c.Set("user_id", int(id))
+		} else {
+			log.Println("warn: claim 'id' not found in the token")
+		}
+		if role, ok := token.Claims.(jwt.MapClaims)["role"].(string); ok {
+			c.Set("user_role", role)
+		} else {
+			log.Println("warn: claim 'role' not found in the token")
 		}
 
 		c.Next()
