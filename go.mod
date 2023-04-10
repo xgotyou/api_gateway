@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/gin-gonic/gin v1.9.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/stretchr/testify v1.8.2
 	google.golang.org/grpc v1.54.0

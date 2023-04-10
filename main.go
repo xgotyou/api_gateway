@@ -12,6 +12,7 @@ import (
 type Config struct {
 	UserServiceAddr string `env:"USER_SERVICE_ADDR"`
 	Port            int    `env:"PORT" env-default:"8081"`
+	JwtSecret       string `env:"JWT_SECRET" env-required:""`
 }
 
 func main() {
@@ -21,5 +22,6 @@ func main() {
 	us := services.NewUserService(cfg.UserServiceAddr)
 
 	r := http.SetupRouter(us)
+	r.Use(http.JwtAuthHandler(cfg.JwtSecret))
 	_ = r.Run(fmt.Sprintf(":%v", cfg.Port))
 }
