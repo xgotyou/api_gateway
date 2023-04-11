@@ -8,6 +8,7 @@ option go_package = "./;xworkpb";
 
 service UserService {
   rpc getUser (UserId) returns (User);
+  rpc createUser (User) returns (User);
 }
 
 message UserId {
@@ -18,6 +19,7 @@ message User {
   int32 id = 1;
   string firstName = 2;
   string lastName = 3;
+  reserved 4;
   // google.protobuf.Timestamp birthDate = 4;
-  // enum role = 5;
+  string role = 5;
 }

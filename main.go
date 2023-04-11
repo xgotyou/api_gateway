@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ilyakaznacheev/cleanenv"
 
@@ -17,7 +18,10 @@ type Config struct {
 
 func main() {
 	var cfg Config
-	cleanenv.ReadEnv(&cfg)
+	err := cleanenv.ReadEnv(&cfg)
+	if err != nil {
+		log.Fatalf("Error reading config: %v\n", err)
+	}
 
 	us := services.NewUserService(cfg.UserServiceAddr)
 

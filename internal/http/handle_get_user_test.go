@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/xgotyou/api_gateway/internal/dtos"
 )
 
@@ -23,12 +22,12 @@ func TestGetUserHandler(t *testing.T) {
 
 	usMock.AssertExpectations(t)
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, `{"id":10,"firstName":"John","lastName":"Smith","birthDate":"1985-10-18T03:00:00+00:00","role":2}`, w.Body.String())
+	assert.JSONEq(t, `{"id":10,"firstName":"John","lastName":"Smith","birthDate":"1985-10-18T03:00:00+00:00","role":"Manager"}`, w.Body.String())
 }
 
 func TestGetUserHandlerWithNonIntId(t *testing.T) {
 	router := SetupRouter(new(userServiceMock))
-	req, _ := http.NewRequest("GET", "/v1/users/alex", strings.NewReader(""))
+	req, _ := http.NewRequest("GET", "/v1/users/alex", nil)
 	w := httptest.NewRecorder()
 
 	router.ServeHTTP(w, req)
@@ -37,16 +36,7 @@ func TestGetUserHandlerWithNonIntId(t *testing.T) {
 	assert.JSONEq(t, `{"errors": ["Id must be an integer"]}`, w.Body.String())
 }
 
-type userServiceMock struct {
-	mock.Mock
-}
-
 func validUserDTO(id int) *dtos.User {
 	bd := time.Date(1985, time.October, 18, 3, 0, 0, 0, time.FixedZone("Msk", 3))
-	return &dtos.User{Id: id, FirstName: "John", LastName: "Smith", BirthDate: bd, Role: dtos.Manager}
-}
-
-func (us *userServiceMock) GetUser(id int) (*dtos.User, error) {
-	args := us.Called(id)
-	return args.Get(0).(*dtos.User), args.Error(1)
+	return &dtos.User{Id: id, FirstName: "John", LastName: "Smith", BirthDate: &bd, Role: dtos.Manager}
 }

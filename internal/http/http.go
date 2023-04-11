@@ -7,6 +7,13 @@ import (
 
 type UserService interface {
 	GetUser(id int) (*dtos.User, error)
+	CreateUser(params CreateUserParams) (*dtos.User, error)
+}
+
+type CreateUserParams struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Role      string `json:"role"`
 }
 
 func SetupRouter(us UserService) *gin.Engine {
@@ -15,6 +22,7 @@ func SetupRouter(us UserService) *gin.Engine {
 	g := r.Group("v1")
 	{
 		g.GET("/users/:id", handleGetUser(us))
+		g.POST("/users", handlCreateUser(us))
 	}
 
 	return r
